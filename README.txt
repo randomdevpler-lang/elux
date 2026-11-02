@@ -1,22 +1,18 @@
-ELUX 0.1.0 — iPhone-friendly PWA prototype
+ELUX 0.2.0 — SPACE EDITION
 
-WHAT THIS VERSION DOES
-- Provides an Elux-style interface.
-- Lets the user select .ipa files from the iPhone Files picker.
-- Saves IPA filenames and metadata in browser local storage.
-- Can be added to the iPhone Home Screen when hosted over HTTPS.
+UPLOAD / UPDATE
+1. Open your GitHub repository: https://github.com/
+2. Open the elux repository.
+3. Upload and replace index.html, style.css, app.js, manifest.webmanifest and sw.js.
+4. Wait for GitHub Pages to redeploy.
+5. Reopen your existing Elux Home Screen icon. If the old design remains, close Elux fully and reopen it; if needed, clear Safari website data for the GitHub Pages site and add it to Home Screen again.
 
-IMPORTANT LIMITATION
-This prototype does NOT sign or install IPA files. iOS requires a valid Apple signing certificate and a matching provisioning profile. A PWA cannot bypass iOS code-signing or install arbitrary apps.
+WHAT'S NEW
+- Black / purple / blue space theme
+- Smoother transitions and responsive layout
+- Searchable app library
+- IPA file storage using IndexedDB where supported
+- Improved app count and empty states
 
-NO-PC SETUP
-1. Create a GitHub account if needed and create a new public repository named elux.
-2. On your iPhone, open the repository in Safari and choose Add file > Upload files.
-3. Upload index.html, style.css, app.js, manifest.webmanifest, and sw.js from this folder.
-4. In the repository, open Settings > Pages.
-5. Under Build and deployment, choose Deploy from a branch, select main and /(root), then Save.
-6. Wait for GitHub Pages to publish, then open the Pages URL in Safari on your iPhone.
-7. Tap Share > Add to Home Screen.
-
-NOTE
-The selected IPA's contents are not retained by this prototype; only its filename and metadata are saved. This is an initial UI/library foundation, not a native IPA installer.
+IMPORTANT
+This is still a web app, not a native IPA installer. It cannot sign or install arbitrary IPA files. iOS requires a valid signing identity and provisioning profile. IPA file storage is local to this browser/app installation and may be removed if website data is cleared. Do not upload private signing certificates or passwords to unknown sites.

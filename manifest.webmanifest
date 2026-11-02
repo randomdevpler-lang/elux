@@ -1,9 +1,9 @@
 {
-  "name": "Elux IPA Library",
+  "name": "Elux \u2014 IPA Library",
   "short_name": "Elux",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#09090c",
-  "theme_color": "#09090c",
-  "description": "Organize your IPA collection with Elux."
+  "background_color": "#080711",
+  "theme_color": "#080711",
+  "description": "Your personal app universe."
 }

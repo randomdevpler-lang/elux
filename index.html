@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#09090c">
+  <meta name="theme-color" content="#080711">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Elux">
@@ -12,58 +12,80 @@
   <title>Elux</title>
 </head>
 <body>
-  <header class="top">
-    <div class="brand"><div class="logo">E</div><div><b>Elux</b><small>IPA library</small></div></div>
-    <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙</button>
+  <div class="stars stars-a"></div><div class="stars stars-b"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Elux home">
+      <span class="brand-mark">E</span>
+      <span class="brand-copy"><b>elux</b><small>THE APP UNIVERSE</small></span>
+    </a>
+    <button class="icon-button" id="settingsBtn" aria-label="Settings" title="Settings">⚙</button>
   </header>
 
   <main>
-    <section class="hero">
-      <span class="eyebrow">YOUR APP SPACE</span>
-      <h1>Apps, your way.</h1>
-      <p>Keep your IPA collection organized in one place.</p>
-      <button class="primary" id="importHero">＋ Import IPA</button>
+    <section class="hero panel">
+      <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+      <div class="hero-content">
+        <span class="eyebrow"><i></i> YOUR PERSONAL APP UNIVERSE</span>
+        <h1>Explore beyond<br><span>the ordinary.</span></h1>
+        <p>Your apps, your collection, your universe. Keep everything organized in one place.</p>
+        <div class="hero-actions">
+          <button class="primary-button" id="importHero"><span>＋</span> Import IPA</button>
+          <button class="ghost-button" id="exploreBtn">Explore library <span>↗</span></button>
+        </div>
+      </div>
+      <div class="planet-wrap" aria-hidden="true"><div class="planet"><div class="planet-glow"></div><div class="planet-ring"></div></div><span class="spark spark-one">✦</span><span class="spark spark-two">✧</span><span class="spark spark-three">·</span></div>
+      <div class="hero-foot"><span><b id="heroCount">0</b> APPS IN YOUR ORBIT</span><span>ELUX <b>0.2</b></span></div>
     </section>
 
-    <nav class="tabs">
-      <button class="tab active" data-page="home">Discover</button>
-      <button class="tab" data-page="library">My Library <span id="count">0</span></button>
-      <button class="tab" data-page="downloads">Downloads</button>
+    <nav class="nav-tabs" aria-label="Main navigation">
+      <button class="nav-tab active" data-page="home"><span>⌂</span> Discover</button>
+      <button class="nav-tab" data-page="library"><span>▦</span> My Apps <em id="count">0</em></button>
+      <button class="nav-tab" data-page="downloads"><span>↓</span> Downloads</button>
     </nav>
 
     <section id="homePage" class="page">
-      <div class="section-head"><div><span class="eyebrow">COLLECTION</span><h2>Get started</h2></div></div>
-      <div class="feature-card">
-        <div class="feature-icon">⇧</div>
-        <div><b>Bring your own IPA</b><p>Choose an IPA file from the Files app to add it to your local library.</p></div>
-        <button class="round" id="importCard">＋</button>
+      <div class="section-heading"><div><span class="eyebrow">START YOUR COLLECTION</span><h2>Welcome to Elux</h2></div><span class="live-dot">● ONLINE</span></div>
+      <div class="quick-grid">
+        <button class="quick-card" id="importCard"><span class="quick-icon purple">⇧</span><b>Import IPA</b><small>Add an app file</small><span class="card-arrow">↗</span></button>
+        <button class="quick-card" id="goLibrary"><span class="quick-icon blue">▦</span><b>My Library</b><small>Manage your collection</small><span class="card-arrow">↗</span></button>
+        <button class="quick-card" id="goDownloads"><span class="quick-icon violet">↓</span><b>Downloads</b><small>See recent activity</small><span class="card-arrow">↗</span></button>
       </div>
-      <div class="notice"><b>Installation status</b><p>Elux is currently a library prototype. iOS requires a valid signing certificate and provisioning profile to install IPA files. This version does not bypass that requirement.</p></div>
-      <div class="section-head"><div><span class="eyebrow">DISCOVER</span><h2>App sources</h2></div></div>
-      <div class="empty compact"><div class="empty-symbol">⌕</div><b>No sources added</b><p>Source browsing will be added after the library foundation.</p></div>
+      <div class="section-heading lower"><div><span class="eyebrow">THE FINE PRINT</span><h2>Signing status</h2></div></div>
+      <article class="status-card panel">
+        <div class="status-icon">⌁</div><div class="status-copy"><b>Signing isn't configured yet</b><p>iOS requires a valid signing certificate and provisioning profile before an IPA can be installed. Elux can organize your files, but this version doesn't bypass Apple's signing requirements.</p></div><span class="status-pill">NOT SET UP</span>
+      </article>
+      <div class="section-heading lower"><div><span class="eyebrow">COMING INTO ORBIT</span><h2>Next up</h2></div></div>
+      <div class="coming-list">
+        <div class="coming-item"><span class="coming-icon">◈</span><div><b>App sources</b><small>Browse compatible app catalogs</small></div><span class="coming-tag">PLANNED</span></div>
+        <div class="coming-item"><span class="coming-icon">✧</span><div><b>Signing manager</b><small>View certificate and profile status</small></div><span class="coming-tag">PLANNED</span></div>
+      </div>
     </section>
 
     <section id="libraryPage" class="page hidden">
-      <div class="section-head"><div><span class="eyebrow">ON THIS DEVICE</span><h2>My Library</h2></div><button class="small-btn" id="importLibrary">＋ Import</button></div>
-      <div id="appList"></div>
-      <div id="libraryEmpty" class="empty"><div class="empty-symbol">▣</div><b>Your library is empty</b><p>Import an IPA to keep its file and details organized here.</p><button class="primary" id="importEmpty">Import IPA</button></div>
+      <div class="section-heading"><div><span class="eyebrow">YOUR COLLECTION</span><h2>My Apps</h2></div><button class="mini-button" id="importLibrary">＋ Import</button></div>
+      <label class="search-box"><span>⌕</span><input id="appSearch" type="search" placeholder="Search your library..." autocomplete="off"></label>
+      <div id="appList" class="app-list"></div>
+      <div id="libraryEmpty" class="empty-state"><div class="empty-art">▦</div><b>Your universe is waiting</b><p>Import an IPA file to start building your collection.</p><button class="primary-button" id="importEmpty">＋ Import your first IPA</button></div>
+      <div id="noMatches" class="empty-state hidden"><b>No matching apps</b><p>Try another search.</p></div>
     </section>
 
     <section id="downloadsPage" class="page hidden">
-      <div class="section-head"><div><span class="eyebrow">ACTIVITY</span><h2>Downloads</h2></div></div>
-      <div class="empty"><div class="empty-symbol">↓</div><b>Nothing downloading</b><p>Download activity will appear here when app sources are supported.</p></div>
+      <div class="section-heading"><div><span class="eyebrow">RECENT ACTIVITY</span><h2>Downloads</h2></div></div>
+      <div class="empty-state"><div class="empty-art">↓</div><b>All quiet in space</b><p>There aren't any downloads yet. Download tracking will appear here when app sources are added.</p></div>
     </section>
 
     <section id="settingsPage" class="page hidden">
-      <div class="section-head"><div><span class="eyebrow">PREFERENCES</span><h2>Settings</h2></div></div>
-      <div class="settings-row"><div><b>Elux version</b><p>0.1.0 • Web prototype</p></div><span>›</span></div>
-      <div class="settings-row"><div><b>Storage</b><p>IPA files are selected locally; this prototype stores library details in this browser.</p></div></div>
-      <div class="notice"><b>Signing & installation</b><p>Signing requires a legitimate Apple signing identity and matching provisioning profile. Never share your Apple password or certificate private key with an unknown website.</p></div>
+      <div class="section-heading"><div><span class="eyebrow">PREFERENCES</span><h2>Settings</h2></div></div>
+      <div class="setting-card"><div><b>Elux version</b><small>0.2.0 • Space edition</small></div><span>›</span></div>
+      <div class="setting-card"><div><b>Local library</b><small>IPA files and app details are stored in this browser when supported.</small></div></div>
+      <div class="setting-card"><div><b>Theme</b><small>Midnight • Purple • Cosmic blue</small></div><span class="theme-dots"><i></i><i></i><i></i></span></div>
+      <article class="status-card panel"><div class="status-icon">ⓘ</div><div class="status-copy"><b>About installation</b><p>This is a web app, not a native iOS installer. Safari web apps cannot install arbitrary IPA files or perform iOS code signing.</p></div></article>
     </section>
   </main>
 
+  <footer><span class="footer-logo">E</span><span>ELUX <b>0.2.0</b></span><span>MADE FOR YOUR UNIVERSE ✦</span></footer>
   <input id="ipaInput" type="file" accept=".ipa,application/octet-stream" hidden>
-  <div id="toast" class="toast" role="status"></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
 </html>
