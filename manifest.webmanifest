@@ -1,9 +1,10 @@
 {
-  "name": "Elux \u2014 IPA Library",
+  "name": "Elux Cosmic Store",
   "short_name": "Elux",
+  "description": "Explore apps and manage your IPA collection.",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#080711",
-  "theme_color": "#080711",
-  "description": "Your personal app universe."
+  "background_color": "#080713",
+  "theme_color": "#080713",
+  "icons": []
 }
