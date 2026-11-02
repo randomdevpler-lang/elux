@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#09090c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Elux">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+  <title>Elux</title>
+</head>
+<body>
+  <header class="top">
+    <div class="brand"><div class="logo">E</div><div><b>Elux</b><small>IPA library</small></div></div>
+    <button class="icon-btn" id="settingsBtn" aria-label="Settings">⚙</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="eyebrow">YOUR APP SPACE</span>
+      <h1>Apps, your way.</h1>
+      <p>Keep your IPA collection organized in one place.</p>
+      <button class="primary" id="importHero">＋ Import IPA</button>
+    </section>
+
+    <nav class="tabs">
+      <button class="tab active" data-page="home">Discover</button>
+      <button class="tab" data-page="library">My Library <span id="count">0</span></button>
+      <button class="tab" data-page="downloads">Downloads</button>
+    </nav>
+
+    <section id="homePage" class="page">
+      <div class="section-head"><div><span class="eyebrow">COLLECTION</span><h2>Get started</h2></div></div>
+      <div class="feature-card">
+        <div class="feature-icon">⇧</div>
+        <div><b>Bring your own IPA</b><p>Choose an IPA file from the Files app to add it to your local library.</p></div>
+        <button class="round" id="importCard">＋</button>
+      </div>
+      <div class="notice"><b>Installation status</b><p>Elux is currently a library prototype. iOS requires a valid signing certificate and provisioning profile to install IPA files. This version does not bypass that requirement.</p></div>
+      <div class="section-head"><div><span class="eyebrow">DISCOVER</span><h2>App sources</h2></div></div>
+      <div class="empty compact"><div class="empty-symbol">⌕</div><b>No sources added</b><p>Source browsing will be added after the library foundation.</p></div>
+    </section>
+
+    <section id="libraryPage" class="page hidden">
+      <div class="section-head"><div><span class="eyebrow">ON THIS DEVICE</span><h2>My Library</h2></div><button class="small-btn" id="importLibrary">＋ Import</button></div>
+      <div id="appList"></div>
+      <div id="libraryEmpty" class="empty"><div class="empty-symbol">▣</div><b>Your library is empty</b><p>Import an IPA to keep its file and details organized here.</p><button class="primary" id="importEmpty">Import IPA</button></div>
+    </section>
+
+    <section id="downloadsPage" class="page hidden">
+      <div class="section-head"><div><span class="eyebrow">ACTIVITY</span><h2>Downloads</h2></div></div>
+      <div class="empty"><div class="empty-symbol">↓</div><b>Nothing downloading</b><p>Download activity will appear here when app sources are supported.</p></div>
+    </section>
+
+    <section id="settingsPage" class="page hidden">
+      <div class="section-head"><div><span class="eyebrow">PREFERENCES</span><h2>Settings</h2></div></div>
+      <div class="settings-row"><div><b>Elux version</b><p>0.1.0 • Web prototype</p></div><span>›</span></div>
+      <div class="settings-row"><div><b>Storage</b><p>IPA files are selected locally; this prototype stores library details in this browser.</p></div></div>
+      <div class="notice"><b>Signing & installation</b><p>Signing requires a legitimate Apple signing identity and matching provisioning profile. Never share your Apple password or certificate private key with an unknown website.</p></div>
+    </section>
+  </main>
+
+  <input id="ipaInput" type="file" accept=".ipa,application/octet-stream" hidden>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
