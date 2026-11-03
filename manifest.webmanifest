@@ -1,6 +1,6 @@
 
 {
-  "name": "Elux Cosmic Installer",
+  "name": "Elux Signer",
   "short_name": "Elux",
   "description": "Discover and manage iOS application packages.",
   "start_url": "./",
