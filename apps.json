@@ -1,0 +1,20 @@
+{
+  "apps": [
+    {
+      "name": "Example App",
+      "bundleIdentifier": "com.example.app",
+      "developerName": "Example Developer",
+      "localizedDescription": "An example app.",
+      "iconURL": "https://example.com/icon.png",
+      "versions": [
+        {
+          "version": "1.0",
+          "date": "2026-11-02",
+          "downloadURL": "https://example.com/example.ipa",
+          "size": "20 MB",
+          "minOSVersion": "16.0"
+        }
+      ]
+    }
+  ]
+}
