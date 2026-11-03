@@ -4,11 +4,11 @@ const $ = id => document.getElementById(id);
 let apps = [];
 let sources = JSON.parse(localStorage.getItem("elux_sources") || "[]");
 let db = null;
-let prepFile = null;
+let selectedIPA = null;
 let toastTimer;
 
 function saveSources() {
-  localStorage.setItem("elux_sources", JSON.stringify(sources));
+  localStorage.setItem("elux_sources",JSON.stringify(sources));
 }
 
 function notify(message) {
@@ -16,20 +16,20 @@ function notify(message) {
   el.textContent = message;
   el.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove("show"), 2800);
+  toastTimer = setTimeout(() => el.classList.remove("show"),2800);
 }
 
 function escapeHTML(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;",
-    '"':"&quot;", "'":"&#39;"
+  return String(value ?? "").replace(/[&<>"']/g,char => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
   })[char]);
 }
 
 function safeURL(value) {
   try {
     const url = new URL(value);
-    return ["https:", "http:"].includes(url.protocol) ? url.href : "";
+    return ["https:","http:"].includes(url.protocol) ? url.href : "";
   } catch {
     return "";
   }
@@ -40,30 +40,30 @@ function showPage(page) {
   $(page).hidden = false;
 
   document.querySelectorAll(".tab").forEach(tab => {
-    tab.classList.toggle("active", tab.dataset.page === page);
+    tab.classList.toggle("active",tab.dataset.page === page);
   });
 
   if (page === "discover") renderApps();
   if (page === "myapps") renderMyApps();
   if (page === "sources") renderSources();
-  if (page === "installprep") renderPrep();
+  if (page === "installprep") renderInstallPrep();
 
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function normalizeCatalog(data, sourceName) {
+function normalizeCatalog(data,sourceName) {
   if (!data || !Array.isArray(data.apps)) {
     throw new Error("This JSON does not contain an apps array.");
   }
 
   return data.apps.map(app => ({
-    name: String(app.name || app.title || "Unnamed app"),
-    bundleIdentifier: String(app.bundleIdentifier || app.bundleId || ""),
-    developer: String(app.developerName || app.developer || "Unknown developer"),
-    description: String(app.localizedDescription || app.subtitle || app.description || "No description provided."),
-    icon: safeURL(app.iconURL || app.icon || ""),
-    source: sourceName,
-    versions: Array.isArray(app.versions) ? app.versions : []
+    name:String(app.name || app.title || "Unnamed app"),
+    bundleIdentifier:String(app.bundleIdentifier || app.bundleId || ""),
+    developer:String(app.developerName || app.developer || "Unknown developer"),
+    description:String(app.localizedDescription || app.subtitle || app.description || "No description provided."),
+    icon:safeURL(app.iconURL || app.icon || ""),
+    source:sourceName,
+    versions:Array.isArray(app.versions) ? app.versions : []
   }));
 }
 
@@ -73,7 +73,7 @@ async function loadSource(source) {
     if (!response.ok) throw new Error("HTTP " + response.status);
 
     const data = await response.json();
-    const loaded = normalizeCatalog(data, source.name);
+    const loaded = normalizeCatalog(data,source.name);
 
     apps.push(...loaded);
     source.status = "Connected";
@@ -96,7 +96,7 @@ async function reloadSources() {
       await loadSource(source);
     } else if (source.type === "file" && source.catalog) {
       try {
-        const loaded = normalizeCatalog(source.catalog, source.name);
+        const loaded = normalizeCatalog(source.catalog,source.name);
         apps.push(...loaded);
         source.status = "Imported";
         source.appCount = loaded.length;
@@ -113,10 +113,9 @@ async function reloadSources() {
 }
 
 function appIcon(app) {
-  if (app.icon) {
-    return `<img class="app-icon" src="${escapeHTML(app.icon)}" alt="" onerror="this.style.display='none'">`;
-  }
-  return `<div class="app-icon fallback">✦</div>`;
+  return app.icon
+    ? `<img class="app-icon" src="${escapeHTML(app.icon)}" alt="" onerror="this.style.display='none'">`
+    : `<div class="app-icon fallback">✦</div>`;
 }
 
 function renderApps() {
@@ -163,14 +162,10 @@ function showDetails(index) {
     return `
       <div class="version">
         <strong>Version ${escapeHTML(version.version || "Unknown")}</strong>
-        <small>
-          ${escapeHTML(version.date || "Date not provided")}
-          ${version.size ? " · " + escapeHTML(version.size) : ""}
-          ${version.minOSVersion ? " · iOS " + escapeHTML(version.minOSVersion) + "+" : ""}
-        </small>
+        <small>${escapeHTML(version.date || "Date not provided")}</small>
         ${
           url
-          ? `<p><a class="primary" href="${escapeHTML(url)}" target="_blank" rel="noopener">↓ Get IPA</a></p>`
+          ? `<p><a class="primary" href="${escapeHTML(url)}" target="_blank" rel="noopener">↓ Download IPA</a></p>`
           : `<p class="hint">No valid download link provided.</p>`
         }
       </div>`;
@@ -202,10 +197,10 @@ function showDetails(index) {
 
     <div class="panel">
       <h3>Available versions</h3>
-      ${versions || "<p>No versions were listed in this catalog.</p>"}
+      ${versions || "<p>No versions listed.</p>"}
     </div>
 
-    <p class="hint">Downloading an IPA does not install or sign it. Only download files from sources you trust.</p>
+    <p class="hint">An IPA download does not automatically install the application.</p>
   `;
 
   document.querySelectorAll(".page").forEach(el => el.hidden = true);
@@ -213,20 +208,16 @@ function showDetails(index) {
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-$("search").addEventListener("input", renderApps);
+$("search").addEventListener("input",renderApps);
 
-$("addSource").addEventListener("click", async () => {
+$("addSource").addEventListener("click",async () => {
   const url = safeURL($("sourceUrl").value.trim());
   const name = $("sourceName").value.trim() || "Custom repository";
 
-  if (!url) {
-    notify("Enter a valid HTTP or HTTPS URL.");
-    return;
-  }
+  if (!url) return notify("Enter a valid HTTP or HTTPS URL.");
 
   if (sources.some(source => source.url === url)) {
-    notify("Repository already added.");
-    return;
+    return notify("Repository already added.");
   }
 
   const source = {name,url,type:"url",status:"Loading..."};
@@ -239,20 +230,18 @@ $("addSource").addEventListener("click", async () => {
   notify("Loading repository...");
   await reloadSources();
 
-  if (source.status === "Connected") {
-    notify(`Repository added: ${source.appCount} apps found.`);
-  } else {
-    notify("Couldn't load it. Try importing its JSON file.");
-  }
+  notify(source.status === "Connected"
+    ? `Added ${source.appCount} apps!`
+    : "Couldn't load it. Try importing its JSON file.");
 });
 
-$("jsonInput").addEventListener("change", async event => {
+$("jsonInput").addEventListener("change",async event => {
   const file = event.target.files[0];
   if (!file) return;
 
   try {
     const catalog = JSON.parse(await file.text());
-    normalizeCatalog(catalog, file.name);
+    normalizeCatalog(catalog,file.name);
 
     sources.push({
       name:file.name,
@@ -291,16 +280,15 @@ async function removeSource(index) {
   notify("Repository removed.");
 }
 
-// Local IPA storage
+// IPA DATABASE
 
 function openDB() {
   return new Promise((resolve,reject) => {
     const request = indexedDB.open("EluxLocalFiles",1);
 
     request.onupgradeneeded = () => {
-      const database = request.result;
-      if (!database.objectStoreNames.contains("ipas")) {
-        database.createObjectStore("ipas",{keyPath:"id",autoIncrement:true});
+      if (!request.result.objectStoreNames.contains("ipas")) {
+        request.result.createObjectStore("ipas",{keyPath:"id",autoIncrement:true});
       }
     };
 
@@ -327,6 +315,7 @@ function dbRequest(mode,action) {
 
 function formatSize(bytes) {
   if (!bytes) return "Unknown size";
+
   const units = ["B","KB","MB","GB"];
   let size = bytes;
   let unit = 0;
@@ -358,7 +347,7 @@ $("ipaInput").addEventListener("change",async event => {
 
   try {
     await saveIPA(file);
-    notify("IPA saved to My Apps!");
+    notify("IPA added to My Apps!");
     await renderMyApps();
   } catch (error) {
     notify(error.message || "Could not save IPA.");
@@ -372,151 +361,122 @@ async function renderMyApps() {
 
   const files = await dbRequest("readonly",store => store.getAll());
 
-  $("myCount").textContent = `${files.length} files`;
+  $("myCount").textContent = `${files.length} apps`;
   $("emptyMy").hidden = files.length > 0;
 
   $("myAppList").innerHTML = files.map(file => `
     <div class="app-row">
       <div>
         <strong>${escapeHTML(file.name)}</strong>
-        <small>${formatSize(file.size)} · Saved locally</small>
+        <small>${formatSize(file.size)} · Imported IPA</small>
       </div>
-      <button class="small-button" onclick="downloadSaved(${file.id})">Export</button>
-      <button class="small-button" onclick="deleteSaved(${file.id})">Delete</button>
+      <button class="small-button" onclick="prepareInstall(${file.id})">Install Prep</button>
+      <button class="small-button" onclick="deleteIPA(${file.id})">Delete</button>
     </div>
   `).join("");
 }
 
-async function downloadSaved(id) {
-  const file = await dbRequest("readonly",store => store.get(id));
-  if (!file) return;
-
-  exportBlob(file.blob,file.name);
-}
-
-async function deleteSaved(id) {
+async function deleteIPA(id) {
   await dbRequest("readwrite",store => store.delete(id));
+
+  if (selectedIPA && selectedIPA.id === id) {
+    selectedIPA = null;
+    resetInstallSelection();
+  }
+
   await renderMyApps();
-  await renderPrep();
+  await renderInstallPrep();
   notify("IPA deleted.");
 }
 
-function exportBlob(blob,name) {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
+// INSTALL PREP
 
-  link.href = url;
-  link.download = name;
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-
-  setTimeout(() => URL.revokeObjectURL(url),30000);
+function resetInstallSelection() {
+  $("selectedName").textContent = "No app selected";
+  $("selectedSize").textContent = "—";
+  $("selectedStatus").textContent = "Waiting";
+  $("installButton").disabled = true;
 }
 
-// Install Prep
-
-function selectPrepFile(file) {
-  prepFile = file;
-
-  $("prepFilename").textContent = file.name;
-  $("prepSize").textContent = formatSize(file.size);
-  $("prepStatus").textContent = "Selected — not verified";
-  $("exportPrep").disabled = false;
-}
-
-$("prepInput").addEventListener("change",async event => {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  try {
-    const id = await saveIPA(file);
-
-    selectPrepFile({
-      id,
-      name:file.name,
-      size:file.size,
-      blob:file
-    });
-
-    notify("IPA saved and selected for preparation.");
-    await renderPrep();
-    await renderMyApps();
-  } catch (error) {
-    notify(error.message || "Could not prepare IPA.");
-  }
-
-  event.target.value = "";
-});
-
-async function selectPrep(id) {
+async function prepareInstall(id) {
   const file = await dbRequest("readonly",store => store.get(id));
-  if (!file) {
-    notify("IPA not found.");
-    return;
-  }
+  if (!file) return notify("IPA not found.");
 
-  selectPrepFile(file);
-  window.scrollTo({top:0,behavior:"smooth"});
+  selectedIPA = file;
+
+  $("selectedName").textContent = file.name;
+  $("selectedSize").textContent = formatSize(file.size);
+  $("selectedStatus").textContent = "Selected — not verified";
+  $("installButton").disabled = false;
+
+  showPage("installprep");
 }
 
-async function renderPrep() {
+async function renderInstallPrep() {
   if (!db) return;
 
   const files = await dbRequest("readonly",store => store.getAll());
 
-  $("prepFileList").innerHTML = files.map(file => `
+  $("installChoices").innerHTML = files.map(file => `
     <div class="app-row">
       <div>
         <strong>${escapeHTML(file.name)}</strong>
         <small>${formatSize(file.size)}</small>
       </div>
-      <button class="small-button" onclick="selectPrep(${file.id})">Prepare</button>
+      <button class="small-button" onclick="prepareInstall(${file.id})">Select</button>
     </div>
-  `).join("") || `<p class="hint">No imported IPA files yet.</p>`;
+  `).join("") || `<p class="hint">Import an IPA into My Apps first.</p>`;
 }
 
-$("exportPrep").addEventListener("click",() => {
-  if (!prepFile || !prepFile.blob) {
-    notify("Select an IPA first.");
-    return;
-  }
+$("installButton").addEventListener("click",() => {
+  if (!selectedIPA) return notify("Select an IPA first.");
 
-  exportBlob(prepFile.blob,prepFile.name);
-  notify("Export started. Check your Files app.");
+  notify("Choose a compatible signing app to continue.");
+
+  const instructions = [
+    "ELUX INSTALLATION",
+    "",
+    "Your IPA is stored in Elux.",
+    "To install it, use a compatible iOS signing tool.",
+    "",
+    "You need a valid signing identity and any required provisioning profile.",
+    "",
+    "Elux does not sign or install the IPA itself."
+  ].join("\n");
+
+  alert(instructions);
 });
+
+// CLEAR DATA
 
 $("clearData").addEventListener("click",async () => {
   if (!confirm("Delete all Elux repositories and imported IPA files?")) return;
 
   sources = [];
-  saveSources();
   apps = [];
-  prepFile = null;
+  selectedIPA = null;
+
+  saveSources();
 
   await dbRequest("readwrite",store => store.clear());
 
-  $("prepFilename").textContent = "Not selected";
-  $("prepSize").textContent = "—";
-  $("prepStatus").textContent = "Waiting";
-  $("exportPrep").disabled = true;
-
+  resetInstallSelection();
   await renderMyApps();
-  await renderPrep();
+  await renderInstallPrep();
   await reloadSources();
 
   notify("Elux data cleared.");
   showPage("discover");
 });
 
-// Start
+// START
 
 async function start() {
   try {
     await openDB();
     await reloadSources();
     await renderMyApps();
-    await renderPrep();
+    await renderInstallPrep();
   } catch (error) {
     console.error(error);
     notify("Local storage could not be opened.");
