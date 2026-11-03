@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,26 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080713">
   <title>Elux — Cosmic Store</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <div class="stars"></div>
 
   <header class="topbar">
-    <a class="brand" href="#" onclick="showPage('discover')">
-      <span class="brand-icon">✦</span>
-      <span>elux</span>
-      <small>0.3</small>
+    <a class="brand" href="#" onclick="showPage('discover');return false">
+      <span class="brand-icon">✦</span> elux <small>0.4</small>
     </a>
-    <button class="icon-button" onclick="showPage('settings')" aria-label="Settings">⚙</button>
+    <button class="icon-button" onclick="showPage('settings')">⚙</button>
   </header>
 
   <main>
     <section class="hero">
       <div class="eyebrow">✦ YOUR COSMIC APP STORE</div>
       <h1>Explore beyond<br><span>the ordinary.</span></h1>
-      <p>Discover apps, explore repositories, and manage your IPA collection.</p>
+      <p>Discover apps, download IPAs, and manage your collection.</p>
       <div class="search-wrap">
         <span>⌕</span>
         <input id="search" placeholder="Search apps..." autocomplete="off">
@@ -35,6 +34,7 @@
       <button class="tab active" data-page="discover" onclick="showPage('discover')">Discover</button>
       <button class="tab" data-page="myapps" onclick="showPage('myapps')">My Apps</button>
       <button class="tab" data-page="sources" onclick="showPage('sources')">Sources</button>
+      <button class="tab" data-page="installprep" onclick="showPage('installprep')">Install Prep</button>
       <button class="tab" data-page="settings" onclick="showPage('settings')">Settings</button>
     </nav>
 
@@ -47,9 +47,14 @@
       <div id="emptyDiscover" class="empty" hidden>
         <div class="empty-icon">✧</div>
         <h3>Your universe is waiting</h3>
-        <p>Add a repository or import a repository JSON file to discover apps.</p>
+        <p>Add a repository to discover apps.</p>
         <button class="primary" onclick="showPage('sources')">Explore sources</button>
       </div>
+    </section>
+
+    <section id="details" class="page" hidden>
+      <button class="back" onclick="showPage('discover')">← Back</button>
+      <div id="detailContent"></div>
     </section>
 
     <section id="myapps" class="page" hidden>
@@ -59,7 +64,7 @@
       </div>
       <div class="panel">
         <h3>Import an IPA</h3>
-        <p>Keep an IPA file in this browser's local storage. This does not install it.</p>
+        <p>Choose an IPA from your iPhone Files app.</p>
         <label class="file-button">
           Choose IPA file
           <input id="ipaInput" type="file" accept=".ipa,application/octet-stream">
@@ -69,7 +74,7 @@
       <div id="emptyMy" class="empty">
         <div class="empty-icon">◇</div>
         <h3>No saved IPAs yet</h3>
-        <p>Import an IPA file to keep it in your local collection.</p>
+        <p>Import an IPA to keep it in your collection.</p>
       </div>
     </section>
 
@@ -79,19 +84,56 @@
       </div>
       <div class="panel">
         <h3>Add a repository</h3>
-        <p>Paste the URL of a compatible app catalog JSON file.</p>
+        <p>Paste a compatible app catalog JSON URL.</p>
         <input id="sourceName" placeholder="Repository name (optional)">
-        <input id="sourceUrl" type="url" placeholder="https://example.com/source.json">
+        <input id="sourceUrl" type="url" placeholder="https://example.com/apps.json">
         <button class="primary full" id="addSource">＋ Add repository</button>
         <div class="or">OR</div>
         <label class="file-button full">
           Import JSON file
           <input id="jsonInput" type="file" accept=".json,application/json">
         </label>
-        <p class="hint">Some websites block browser access (CORS). If a URL fails, download its JSON file and import it here.</p>
+        <p class="hint">If a website blocks browser access, download its JSON file and import it here.</p>
       </div>
       <h3 class="subheading">Your repositories</h3>
       <div id="sourceList" class="app-list"></div>
+    </section>
+
+    <section id="installprep" class="page" hidden>
+      <div class="section-heading">
+        <div><span class="eyebrow">INSTALLATION CENTER</span><h2>Install Prep</h2></div>
+      </div>
+
+      <div class="panel">
+        <div class="eyebrow">STEP 01</div>
+        <h3>Choose an IPA</h3>
+        <p>Import an IPA from Files to prepare it for a compatible signing tool.</p>
+        <label class="file-button full">
+          Select IPA from Files
+          <input id="prepInput" type="file" accept=".ipa,application/octet-stream">
+        </label>
+      </div>
+
+      <div class="panel">
+        <div class="eyebrow">STEP 02</div>
+        <h3>Selected file</h3>
+        <div class="setting-row"><span>Filename</span><strong id="prepFilename">Not selected</strong></div>
+        <div class="setting-row"><span>File size</span><strong id="prepSize">—</strong></div>
+        <div class="setting-row"><span>Preparation</span><strong id="prepStatus">Waiting</strong></div>
+        <button class="primary full" id="exportPrep" disabled>Export IPA to Files</button>
+      </div>
+
+      <div class="panel">
+        <div class="eyebrow">STEP 03</div>
+        <h3>Signing information</h3>
+        <p>Elux does not sign IPAs. A compatible signing tool needs a valid signing certificate and provisioning profile, or another supported installation method.</p>
+        <p class="hint">An IPA being selected does not mean it is signed or ready to install. Elux does not verify signatures.</p>
+      </div>
+
+      <div class="panel">
+        <h3>Saved IPA files</h3>
+        <div id="prepFileList" class="app-list"></div>
+      </div>
     </section>
 
     <section id="settings" class="page" hidden>
@@ -100,27 +142,22 @@
       </div>
       <div class="panel">
         <h3>Elux Cosmic Store</h3>
-        <p>Version 0.3 · Your personal IPA catalog.</p>
-        <div class="setting-row"><span>App version</span><strong>0.3 Cosmic</strong></div>
+        <p>Version 0.4 · Your personal IPA catalog.</p>
+        <div class="setting-row"><span>Version</span><strong>0.4 Cosmic</strong></div>
         <div class="setting-row"><span>Storage</span><strong>On this device</strong></div>
         <div class="setting-row"><span>Theme</span><strong>Cosmic dark</strong></div>
       </div>
       <div class="panel warning">
         <h3>Stay safe</h3>
-        <p>Only add repositories and download IPA files from sources you trust. Elux does not verify that an IPA is safe.</p>
+        <p>Only use repositories and IPA files you trust. Elux does not verify that an IPA is safe.</p>
       </div>
       <button class="danger full" id="clearData">Clear Elux data</button>
-    </section>
-
-    <section id="details" class="page" hidden>
-      <button class="back" onclick="showPage('discover')">← Back to Discover</button>
-      <div id="detailContent"></div>
     </section>
   </main>
 
   <footer>ELUX <span>✦</span> EXPLORE YOUR UNIVERSE</footer>
   <div id="toast" class="toast" role="status"></div>
-
-  <script src="app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
+
