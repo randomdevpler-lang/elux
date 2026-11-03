@@ -1,8 +1,8 @@
 
 {
-  "name": "Elux Cosmic Store",
+  "name": "Elux Cosmic Installer",
   "short_name": "Elux",
-  "description": "Explore apps and manage your IPA collection.",
+  "description": "Discover and manage iOS application packages.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#080713",
