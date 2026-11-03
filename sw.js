@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "elux-cosmic-v04";
+const CACHE_NAME = "elux-cosmic-v05";
 
 const FILES = [
   "./",
